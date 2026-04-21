@@ -1,3 +1,3 @@
-module github.com/phosphor-tech/supervisor-sdk-go
+module github.com/Phosphor-gg/supervisor-sdk-go
 
 go 1.21

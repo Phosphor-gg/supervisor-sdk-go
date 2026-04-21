@@ -7,7 +7,7 @@ Zero dependencies — uses only the standard library.
 ## Installation
 
 ```bash
-go get github.com/phosphor-tech/supervisor-sdk-go
+go get github.com/Phosphor-gg/supervisor-sdk-go
 ```
 
 ## Quick Start
@@ -20,7 +20,7 @@ import (
     "fmt"
     "log"
 
-    supervisor "github.com/phosphor-tech/supervisor-sdk-go"
+    supervisor "github.com/Phosphor-gg/supervisor-sdk-go"
 )
 
 func main() {
