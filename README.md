@@ -73,25 +73,25 @@ fmt.Printf("Flagged: %v, Score: %f\n", result.Flagged, result.Score)
 labels, err := client.GetLabels(ctx)
 ```
 
-## Partner API
+## Platform API
 
 ```go
-partner := supervisor.NewPartnerClient("client-id", "client-secret")
+platform := supervisor.NewPlatformClient("client-id", "client-secret")
 
 // Provision a user
-user, err := partner.ProvisionUser(ctx, "user@example.com")
+user, err := platform.ProvisionUser(ctx, "user@example.com")
 
 // Moderate on behalf of a user
-result, err := partner.Moderate(ctx, &supervisor.PartnerModerationRequest{
+result, err := platform.Moderate(ctx, &supervisor.PlatformModerationRequest{
     UserEmail: "user@example.com",
     Text:      supervisor.String("check this"),
 })
 
 // List linked users
-users, err := partner.ListUsers(ctx)
+users, err := platform.ListUsers(ctx)
 
 // Create checkout
-checkout, err := partner.CreateCheckout(ctx, &supervisor.PartnerCheckoutRequest{
+checkout, err := platform.CreateCheckout(ctx, &supervisor.PlatformCheckoutRequest{
     UserEmail:    "user@example.com",
     Tier:         supervisor.TierStandard,
     BillingCycle: supervisor.BillingMonthly,

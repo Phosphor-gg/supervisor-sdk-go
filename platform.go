@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
-// PartnerClient is the Supervisor Partner API client with OAuth2 client credentials.
-type PartnerClient struct {
+// PlatformClient is the Supervisor Platform API client with OAuth2 client credentials.
+type PlatformClient struct {
 	clientID     string
 	clientSecret string
 	baseURL      string
@@ -23,8 +23,8 @@ type PartnerClient struct {
 	tokenExpiresAt time.Time
 }
 
-// NewPartnerClient creates a new Partner API client.
-func NewPartnerClient(clientID, clientSecret string, opts ...ClientOption) *PartnerClient {
+// NewPlatformClient creates a new Platform API client.
+func NewPlatformClient(clientID, clientSecret string, opts ...ClientOption) *PlatformClient {
 	// Use a temporary Client to apply options
 	tmp := &Client{
 		baseURL:    defaultBaseURL,
@@ -34,7 +34,7 @@ func NewPartnerClient(clientID, clientSecret string, opts ...ClientOption) *Part
 		opt(tmp)
 	}
 
-	return &PartnerClient{
+	return &PlatformClient{
 		clientID:     clientID,
 		clientSecret: clientSecret,
 		baseURL:      tmp.baseURL,
@@ -42,7 +42,7 @@ func NewPartnerClient(clientID, clientSecret string, opts ...ClientOption) *Part
 	}
 }
 
-func (p *PartnerClient) ensureToken(ctx context.Context) (string, error) {
+func (p *PlatformClient) ensureToken(ctx context.Context) (string, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -50,7 +50,7 @@ func (p *PartnerClient) ensureToken(ctx context.Context) (string, error) {
 		return p.accessToken, nil
 	}
 
-	tokenReq := PartnerTokenRequest{
+	tokenReq := PlatformTokenRequest{
 		ClientID:     p.clientID,
 		ClientSecret: p.clientSecret,
 		GrantType:    "client_credentials",
@@ -61,7 +61,7 @@ func (p *PartnerClient) ensureToken(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("marshal token request: %w", err)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, p.baseURL+"/api/partner/token", bytes.NewReader(data))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, p.baseURL+"/api/platform/token", bytes.NewReader(data))
 	if err != nil {
 		return "", fmt.Errorf("create token request: %w", err)
 	}
@@ -86,7 +86,7 @@ func (p *PartnerClient) ensureToken(ctx context.Context) (string, error) {
 		return "", &Error{StatusCode: resp.StatusCode, Message: http.StatusText(resp.StatusCode)}
 	}
 
-	var tokenResp PartnerTokenResponse
+	var tokenResp PlatformTokenResponse
 	if err := json.Unmarshal(body, &tokenResp); err != nil {
 		return "", fmt.Errorf("unmarshal token response: %w", err)
 	}
@@ -96,7 +96,7 @@ func (p *PartnerClient) ensureToken(ctx context.Context) (string, error) {
 	return p.accessToken, nil
 }
 
-func (p *PartnerClient) doRequest(ctx context.Context, method, path string, reqBody any, result any) error {
+func (p *PlatformClient) doRequest(ctx context.Context, method, path string, reqBody any, result any) error {
 	token, err := p.ensureToken(ctx)
 	if err != nil {
 		return err
@@ -147,65 +147,65 @@ func (p *PartnerClient) doRequest(ctx context.Context, method, path string, reqB
 }
 
 // ProvisionUser provisions or links a user by email.
-func (p *PartnerClient) ProvisionUser(ctx context.Context, email string) (*ProvisionUserResponse, error) {
+func (p *PlatformClient) ProvisionUser(ctx context.Context, email string) (*ProvisionUserResponse, error) {
 	var result ProvisionUserResponse
 	req := ProvisionUserRequest{Email: email}
-	if err := p.doRequest(ctx, http.MethodPost, "/api/partner/users/provision", req, &result); err != nil {
+	if err := p.doRequest(ctx, http.MethodPost, "/api/platform/users/provision", req, &result); err != nil {
 		return nil, err
 	}
 	return &result, nil
 }
 
-// ListUsers lists all users linked to this partner.
-func (p *PartnerClient) ListUsers(ctx context.Context) ([]PartnerUserInfo, error) {
-	var result []PartnerUserInfo
-	if err := p.doRequest(ctx, http.MethodGet, "/api/partner/users", nil, &result); err != nil {
+// ListUsers lists all users linked to this platform.
+func (p *PlatformClient) ListUsers(ctx context.Context) ([]PlatformUserInfo, error) {
+	var result []PlatformUserInfo
+	if err := p.doRequest(ctx, http.MethodGet, "/api/platform/users", nil, &result); err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
 // GetUser gets a specific linked user by ID.
-func (p *PartnerClient) GetUser(ctx context.Context, userID string) (*PartnerUserInfo, error) {
-	var result PartnerUserInfo
-	if err := p.doRequest(ctx, http.MethodGet, "/api/partner/users/"+userID, nil, &result); err != nil {
+func (p *PlatformClient) GetUser(ctx context.Context, userID string) (*PlatformUserInfo, error) {
+	var result PlatformUserInfo
+	if err := p.doRequest(ctx, http.MethodGet, "/api/platform/users/"+userID, nil, &result); err != nil {
 		return nil, err
 	}
 	return &result, nil
 }
 
 // Moderate moderates content on behalf of a linked user.
-func (p *PartnerClient) Moderate(ctx context.Context, req *PartnerModerationRequest) (*ModerationResponse, error) {
+func (p *PlatformClient) Moderate(ctx context.Context, req *PlatformModerationRequest) (*ModerationResponse, error) {
 	var result ModerationResponse
-	if err := p.doRequest(ctx, http.MethodPost, "/api/partner/moderate", req, &result); err != nil {
+	if err := p.doRequest(ctx, http.MethodPost, "/api/platform/moderate", req, &result); err != nil {
 		return nil, err
 	}
 	return &result, nil
 }
 
-// CreateCheckout creates a Stripe checkout session for a partner user.
-func (p *PartnerClient) CreateCheckout(ctx context.Context, req *PartnerCheckoutRequest) (*PartnerCheckoutResponse, error) {
-	var result PartnerCheckoutResponse
-	if err := p.doRequest(ctx, http.MethodPost, "/api/partner/checkout", req, &result); err != nil {
+// CreateCheckout creates a Stripe checkout session for a platform user.
+func (p *PlatformClient) CreateCheckout(ctx context.Context, req *PlatformCheckoutRequest) (*PlatformCheckoutResponse, error) {
+	var result PlatformCheckoutResponse
+	if err := p.doRequest(ctx, http.MethodPost, "/api/platform/checkout", req, &result); err != nil {
 		return nil, err
 	}
 	return &result, nil
 }
 
 // ConfirmAuthorization confirms a user's authorization with the provided code.
-func (p *PartnerClient) ConfirmAuthorization(ctx context.Context, code string) (*ConfirmAuthorizationResponse, error) {
+func (p *PlatformClient) ConfirmAuthorization(ctx context.Context, code string) (*ConfirmAuthorizationResponse, error) {
 	var result ConfirmAuthorizationResponse
 	req := ConfirmAuthorizationRequest{Code: code}
-	if err := p.doRequest(ctx, http.MethodPost, "/api/partner/users/confirm-authorization", req, &result); err != nil {
+	if err := p.doRequest(ctx, http.MethodPost, "/api/platform/users/confirm-authorization", req, &result); err != nil {
 		return nil, err
 	}
 	return &result, nil
 }
 
 // GetConnectStatus gets the Stripe Connect onboarding status.
-func (p *PartnerClient) GetConnectStatus(ctx context.Context) (*StripeConnectStatusResponse, error) {
+func (p *PlatformClient) GetConnectStatus(ctx context.Context) (*StripeConnectStatusResponse, error) {
 	var result StripeConnectStatusResponse
-	if err := p.doRequest(ctx, http.MethodGet, "/api/partner/connect/status", nil, &result); err != nil {
+	if err := p.doRequest(ctx, http.MethodGet, "/api/platform/connect/status", nil, &result); err != nil {
 		return nil, err
 	}
 	return &result, nil

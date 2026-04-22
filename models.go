@@ -92,15 +92,15 @@ type UsernameCheckResponse struct {
 	Score   float64 `json:"score"`
 }
 
-// PartnerTokenRequest is the OAuth2 client credentials request.
-type PartnerTokenRequest struct {
+// PlatformTokenRequest is the OAuth2 client credentials request.
+type PlatformTokenRequest struct {
 	ClientID     string `json:"client_id"`
 	ClientSecret string `json:"client_secret"`
 	GrantType    string `json:"grant_type"`
 }
 
-// PartnerTokenResponse is the OAuth2 access token response.
-type PartnerTokenResponse struct {
+// PlatformTokenResponse is the OAuth2 access token response.
+type PlatformTokenResponse struct {
 	AccessToken string `json:"access_token"`
 	TokenType   string `json:"token_type"`
 	ExpiresIn   int64  `json:"expires_in"`
@@ -119,8 +119,8 @@ type ProvisionUserResponse struct {
 	IsNewlyLinked bool  `json:"is_newly_linked"`
 }
 
-// PartnerUserInfo represents a partner's view of a linked user.
-type PartnerUserInfo struct {
+// PlatformUserInfo represents a platform's view of a linked user.
+type PlatformUserInfo struct {
 	UserID                string `json:"user_id"`
 	Email                 string `json:"email"`
 	LinkedAt              string `json:"linked_at"`
@@ -129,8 +129,8 @@ type PartnerUserInfo struct {
 	Tier                  Tier   `json:"tier"`
 }
 
-// PartnerModerationRequest moderates content on behalf of a linked user.
-type PartnerModerationRequest struct {
+// PlatformModerationRequest moderates content on behalf of a linked user.
+type PlatformModerationRequest struct {
 	UserEmail      string            `json:"user_email"`
 	Text           *string           `json:"text,omitempty"`
 	Image          *string           `json:"image,omitempty"`
@@ -139,8 +139,8 @@ type PartnerModerationRequest struct {
 	IncludeContext bool              `json:"include_context,omitempty"`
 }
 
-// PartnerCheckoutRequest creates a checkout session for a partner user.
-type PartnerCheckoutRequest struct {
+// PlatformCheckoutRequest creates a checkout session for a platform user.
+type PlatformCheckoutRequest struct {
 	UserEmail    string       `json:"user_email"`
 	Tier         Tier         `json:"tier"`
 	BillingCycle BillingCycle `json:"billing_cycle"`
@@ -148,8 +148,8 @@ type PartnerCheckoutRequest struct {
 	CancelURL    string       `json:"cancel_url"`
 }
 
-// PartnerCheckoutResponse contains the checkout URL.
-type PartnerCheckoutResponse struct {
+// PlatformCheckoutResponse contains the checkout URL.
+type PlatformCheckoutResponse struct {
 	CheckoutURL string `json:"checkout_url"`
 }
 
