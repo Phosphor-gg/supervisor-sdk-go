@@ -65,6 +65,7 @@ type ModerationRequest struct {
 // BatchModerationRequest is the request body for POST /api/batch.
 type BatchModerationRequest struct {
 	Texts          []string          `json:"texts"`
+	Images         []string          `json:"images,omitempty"`
 	Model          *ModerationModel  `json:"model,omitempty"`
 	EnabledLabels  []ModerationLabel `json:"enabled_labels,omitempty"`
 	IncludeContext bool              `json:"include_context,omitempty"`

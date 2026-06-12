@@ -116,6 +116,9 @@ func (c *Client) Moderate(ctx context.Context, req *ModerationRequest) (*Moderat
 
 // ModerateBatch sends a batch moderation request for multiple texts.
 func (c *Client) ModerateBatch(ctx context.Context, req *BatchModerationRequest) ([]ModerationResponse, error) {
+	if len(req.Texts) > 0 && len(req.Images) > 0 && len(req.Texts) != len(req.Images) {
+		return nil, fmt.Errorf("texts and images must have equal length when both are provided: got %d texts and %d images", len(req.Texts), len(req.Images))
+	}
 	var result []ModerationResponse
 	if err := c.doRequest(ctx, http.MethodPost, "/api/batch", req, &result); err != nil {
 		return nil, err
@@ -134,8 +137,8 @@ func (c *Client) CheckUsername(ctx context.Context, username string) (*UsernameC
 }
 
 // GetLabels retrieves all available moderation labels.
-func (c *Client) GetLabels(ctx context.Context) ([]ModerationLabel, error) {
-	var result []ModerationLabel
+func (c *Client) GetLabels(ctx context.Context) (map[string]string, error) {
+	var result map[string]string
 	if err := c.doRequest(ctx, http.MethodGet, "/api/labels", nil, &result); err != nil {
 		return nil, err
 	}
