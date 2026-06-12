@@ -46,28 +46,30 @@ const (
 type BillingCycle string
 
 const (
-	BillingMonthly    BillingCycle = "Monthly"
-	BillingQuarterly  BillingCycle = "Quarterly"
-	BillingAnnual     BillingCycle = "Annual"
-	BillingTriennial  BillingCycle = "Triennial"
+	BillingMonthly   BillingCycle = "Monthly"
+	BillingQuarterly BillingCycle = "Quarterly"
+	BillingAnnual    BillingCycle = "Annual"
+	BillingTriennial BillingCycle = "Triennial"
 )
 
 // ModerationRequest is the request body for POST /api/moderate.
 type ModerationRequest struct {
-	Text           *string           `json:"text,omitempty"`
-	Image          *string           `json:"image,omitempty"`
-	Model          *ModerationModel  `json:"model,omitempty"`
-	EnabledLabels  []ModerationLabel `json:"enabled_labels,omitempty"`
-	IncludeContext bool              `json:"include_context,omitempty"`
+	Text            *string           `json:"text,omitempty"`
+	Image           *string           `json:"image,omitempty"`
+	Model           *ModerationModel  `json:"model,omitempty"`
+	EnabledLabels   []ModerationLabel `json:"enabled_labels,omitempty"`
+	IncludeContext  bool              `json:"include_context,omitempty"`
+	IncludeImplicit bool              `json:"include_implicit,omitempty"`
 }
 
 // BatchModerationRequest is the request body for POST /api/batch.
 type BatchModerationRequest struct {
-	Texts          []string          `json:"texts"`
-	Images         []string          `json:"images,omitempty"`
-	Model          *ModerationModel  `json:"model,omitempty"`
-	EnabledLabels  []ModerationLabel `json:"enabled_labels,omitempty"`
-	IncludeContext bool              `json:"include_context,omitempty"`
+	Texts           []string          `json:"texts"`
+	Images          []string          `json:"images,omitempty"`
+	Model           *ModerationModel  `json:"model,omitempty"`
+	EnabledLabels   []ModerationLabel `json:"enabled_labels,omitempty"`
+	IncludeContext  bool              `json:"include_context,omitempty"`
+	IncludeImplicit bool              `json:"include_implicit,omitempty"`
 }
 
 // UsernameCheckRequest is the request body for POST /api/username.
@@ -116,10 +118,10 @@ type ProvisionUserRequest struct {
 
 // ProvisionUserResponse is the result of provisioning a user.
 type ProvisionUserResponse struct {
-	UserID       string `json:"user_id"`
-	Email        string `json:"email"`
-	IsNewAccount bool   `json:"is_new_account"`
-	IsNewlyLinked bool  `json:"is_newly_linked"`
+	UserID        string `json:"user_id"`
+	Email         string `json:"email"`
+	IsNewAccount  bool   `json:"is_new_account"`
+	IsNewlyLinked bool   `json:"is_newly_linked"`
 }
 
 // PlatformUserInfo represents a platform's view of a linked user.
@@ -134,12 +136,13 @@ type PlatformUserInfo struct {
 
 // PlatformModerationRequest moderates content on behalf of a linked user.
 type PlatformModerationRequest struct {
-	UserEmail      string            `json:"user_email"`
-	Text           *string           `json:"text,omitempty"`
-	Image          *string           `json:"image,omitempty"`
-	Model          *ModerationModel  `json:"model,omitempty"`
-	EnabledLabels  []ModerationLabel `json:"enabled_labels,omitempty"`
-	IncludeContext bool              `json:"include_context,omitempty"`
+	UserEmail       string            `json:"user_email"`
+	Text            *string           `json:"text,omitempty"`
+	Image           *string           `json:"image,omitempty"`
+	Model           *ModerationModel  `json:"model,omitempty"`
+	EnabledLabels   []ModerationLabel `json:"enabled_labels,omitempty"`
+	IncludeContext  bool              `json:"include_context,omitempty"`
+	IncludeImplicit bool              `json:"include_implicit,omitempty"`
 }
 
 // PlatformCheckoutRequest creates a checkout session for a platform user.
