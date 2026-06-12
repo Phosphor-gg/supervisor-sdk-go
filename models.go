@@ -20,7 +20,6 @@ const (
 	LabelPromotional  ModerationLabel = "promotional"
 	LabelScam         ModerationLabel = "scam"
 	LabelIllegal      ModerationLabel = "illegal"
-	LabelPersonalData ModerationLabel = "personal-data"
 )
 
 // ModerationModel represents available AI moderation models.
@@ -77,14 +76,17 @@ type UsernameCheckRequest struct {
 }
 
 // ModerationResponse is the result of a moderation request.
+//
+// Label fields are plain strings (not the ModerationLabel enum) so new or
+// aliased labels returned by the server pass through rather than being rejected.
 type ModerationResponse struct {
-	Flagged        bool              `json:"flagged"`
-	Labels         []ModerationLabel `json:"labels"`
-	ImplicitLabels []ModerationLabel `json:"implicit_labels,omitempty"`
-	ModelVersion   *string           `json:"model_version,omitempty"`
-	NeedsContext   *bool             `json:"needs_context,omitempty"`
-	ContextLabels  []ModerationLabel `json:"context_labels,omitempty"`
-	RewrittenText  *string           `json:"rewritten_text,omitempty"`
+	Flagged        bool     `json:"flagged"`
+	Labels         []string `json:"labels"`
+	ImplicitLabels []string `json:"implicit_labels,omitempty"`
+	ModelVersion   *string  `json:"model_version,omitempty"`
+	NeedsContext   *bool    `json:"needs_context,omitempty"`
+	ContextLabels  []string `json:"context_labels,omitempty"`
+	RewrittenText  *string  `json:"rewritten_text,omitempty"`
 }
 
 // UsernameCheckResponse is the result of a username check.
