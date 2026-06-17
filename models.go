@@ -36,10 +36,10 @@ const (
 type Tier string
 
 const (
-	TierFree     Tier = "Free"
-	TierBasic    Tier = "Basic"
-	TierStandard Tier = "Standard"
-	TierPremium  Tier = "Premium"
+	TierFree     Tier = "free"
+	TierBasic    Tier = "basic"
+	TierStandard Tier = "standard"
+	TierPremium  Tier = "premium"
 )
 
 // BillingCycle represents billing period options.
