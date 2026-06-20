@@ -10,7 +10,7 @@ const (
 	LabelHate         ModerationLabel = "hate"
 	LabelInsult       ModerationLabel = "insult"
 	LabelSexual       ModerationLabel = "sexual"
-	LabelSexualMinors ModerationLabel = "sexual/minors"
+	LabelSexualUnlawful ModerationLabel = "sexual/unlawful"
 	LabelSexualExp    ModerationLabel = "sexual/explicit"
 	LabelSensitive    ModerationLabel = "sensitive"
 	LabelViolence     ModerationLabel = "violence"
