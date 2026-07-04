@@ -4,22 +4,22 @@ package supervisor
 type ModerationLabel string
 
 const (
-	LabelProfanity    ModerationLabel = "profanity"
-	LabelToxicity     ModerationLabel = "toxicity"
-	LabelHarassment   ModerationLabel = "harassment"
-	LabelHate         ModerationLabel = "hate"
-	LabelInsult       ModerationLabel = "insult"
-	LabelSexual       ModerationLabel = "sexual"
+	LabelProfanity      ModerationLabel = "profanity"
+	LabelToxicity       ModerationLabel = "toxicity"
+	LabelHarassment     ModerationLabel = "harassment"
+	LabelHate           ModerationLabel = "hate"
+	LabelInsult         ModerationLabel = "insult"
+	LabelSexual         ModerationLabel = "sexual"
 	LabelSexualUnlawful ModerationLabel = "sexual/unlawful"
-	LabelSexualExp    ModerationLabel = "sexual/explicit"
-	LabelSensitive    ModerationLabel = "sensitive"
-	LabelViolence     ModerationLabel = "violence"
-	LabelSelfHarm     ModerationLabel = "self-harm"
-	LabelMedical      ModerationLabel = "medical"
-	LabelSpam         ModerationLabel = "spam"
-	LabelPromotional  ModerationLabel = "promotional"
-	LabelScam         ModerationLabel = "scam"
-	LabelIllegal      ModerationLabel = "illegal"
+	LabelSexualExp      ModerationLabel = "sexual/explicit"
+	LabelSensitive      ModerationLabel = "sensitive"
+	LabelViolence       ModerationLabel = "violence"
+	LabelSelfHarm       ModerationLabel = "self-harm"
+	LabelMedical        ModerationLabel = "medical"
+	LabelSpam           ModerationLabel = "spam"
+	LabelPromotional    ModerationLabel = "promotional"
+	LabelScam           ModerationLabel = "scam"
+	LabelIllegal        ModerationLabel = "illegal"
 )
 
 // ModerationModel represents available AI moderation models.
@@ -40,6 +40,8 @@ const (
 	TierBasic    Tier = "basic"
 	TierStandard Tier = "standard"
 	TierPremium  Tier = "premium"
+	// TierVerified is the lifetime plan: one-time purchase, no billing cycle.
+	TierVerified Tier = "verified"
 )
 
 // BillingCycle represents billing period options.
@@ -198,10 +200,24 @@ type CreditPack struct {
 	CreditsAmount int64   `json:"credits_amount"`
 }
 
+// LifetimePlan is the lifetime (Verified) plan: one-time purchase, no billing cycle.
+type LifetimePlan struct {
+	ProductID string `json:"product_id"`
+	PriceID   string `json:"price_id"`
+	Name      string `json:"name"`
+	// Amount is the price in cents.
+	Amount         int64  `json:"amount"`
+	Currency       string `json:"currency"`
+	MonthlyCredits int64  `json:"monthly_credits"`
+}
+
 // PlatformProductsResponse lists everything a platform can sell.
 type PlatformProductsResponse struct {
 	Plans       []PlanPrice  `json:"plans"`
 	CreditPacks []CreditPack `json:"credit_packs"`
+	// Lifetime is present when a lifetime plan is configured. Sold via
+	// CreateCheckout with TierVerified.
+	Lifetime *LifetimePlan `json:"lifetime,omitempty"`
 }
 
 // PlatformCreditCheckoutRequest is a credit pack checkout for a linked user.
