@@ -126,6 +126,37 @@ fmt.Printf("Subscription %s is now %s (%s)\n", change.SubscriptionID, change.Tie
 - `ChangePlan` returns 403 if the subscription was not originated by your platform, and 400 if the user has no active subscription.
 - Revenue share is set at subscription creation and preserved across plan changes.
 
+### Products and checkout links
+
+Platforms sell Supervisor plans and credit packs from their own site. List the products, render them however you like, and when a user clicks, mint a per-user checkout link and redirect. Revenue share applies to both product types.
+
+```go
+products, err := platform.GetProducts(ctx)
+// products.Plans: subscription tiers with prices in cents
+// products.CreditPacks: one-time credit packs
+
+// Plan checkout (new subscription)
+checkout, err := platform.CreateCheckout(ctx, &supervisor.PlatformCheckoutRequest{...})
+
+// Credit pack checkout (one-time payment)
+credits, err := platform.CreateCreditCheckout(ctx, supervisor.PlatformCreditCheckoutRequest{
+    UserEmail:  "user@example.com",
+    PriceID:    products.CreditPacks[0].PriceID,
+    SuccessURL: "https://myapp.com/thanks",
+    CancelURL:  "https://myapp.com/pricing",
+})
+// redirect the user to credits.CheckoutURL
+```
+
+Show an authorized user their remaining credits:
+
+```go
+balance, err := platform.GetUserCredits(ctx, userID)
+// balance.Balance is the total usable right now; monthly and extra breakdowns included
+```
+
+Returns 403 if the user has not authorized your platform.
+
 ## Configuration
 
 ```go

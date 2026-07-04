@@ -173,6 +173,57 @@ type PlatformChangePlanResponse struct {
 	BillingCycle   BillingCycle `json:"billing_cycle"`
 }
 
+// PlanPrice is a subscription plan price a platform can sell.
+type PlanPrice struct {
+	PriceID      string       `json:"price_id"`
+	ProductID    string       `json:"product_id"`
+	Tier         Tier         `json:"tier"`
+	BillingCycle BillingCycle `json:"billing_cycle"`
+	// Amount is the price in cents.
+	Amount   int64  `json:"amount"`
+	Currency string `json:"currency"`
+	// PaymentLink is always null on the platform products endpoint: mint
+	// links via CreateCheckout so the revenue share applies.
+	PaymentLink *string `json:"payment_link"`
+}
+
+// CreditPack is a one-time credit pack a platform can sell.
+type CreditPack struct {
+	ID            string  `json:"id"`
+	PriceID       string  `json:"price_id"`
+	Name          string  `json:"name"`
+	Description   *string `json:"description"`
+	PriceCents    int64   `json:"price_cents"`
+	Currency      string  `json:"currency"`
+	CreditsAmount int64   `json:"credits_amount"`
+}
+
+// PlatformProductsResponse lists everything a platform can sell.
+type PlatformProductsResponse struct {
+	Plans       []PlanPrice  `json:"plans"`
+	CreditPacks []CreditPack `json:"credit_packs"`
+}
+
+// PlatformCreditCheckoutRequest is a credit pack checkout for a linked user.
+type PlatformCreditCheckoutRequest struct {
+	UserEmail  string `json:"user_email"`
+	PriceID    string `json:"price_id"`
+	SuccessURL string `json:"success_url"`
+	CancelURL  string `json:"cancel_url"`
+}
+
+// PlatformUserCreditsResponse is the remaining credits of an authorized user.
+type PlatformUserCreditsResponse struct {
+	UserID             string  `json:"user_id"`
+	Email              string  `json:"email"`
+	Balance            int64   `json:"balance"`
+	MonthlyAllocation  int64   `json:"monthly_allocation"`
+	UsedThisMonth      int64   `json:"used_this_month"`
+	RemainingThisMonth int64   `json:"remaining_this_month"`
+	ExtraCredits       int64   `json:"extra_credits"`
+	ResetDate          *string `json:"reset_date"`
+}
+
 // ConfirmAuthorizationRequest confirms user authorization.
 type ConfirmAuthorizationRequest struct {
 	Code string `json:"code"`

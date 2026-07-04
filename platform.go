@@ -201,6 +201,33 @@ func (p *PlatformClient) ChangePlan(ctx context.Context, req PlatformChangePlanR
 	return &result, nil
 }
 
+// GetProducts lists the plans and credit packs this platform can sell.
+func (p *PlatformClient) GetProducts(ctx context.Context) (*PlatformProductsResponse, error) {
+	var result PlatformProductsResponse
+	if err := p.doRequest(ctx, http.MethodGet, "/api/platform/products", nil, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// CreateCreditCheckout creates a Stripe checkout for a credit pack purchase.
+func (p *PlatformClient) CreateCreditCheckout(ctx context.Context, req PlatformCreditCheckoutRequest) (*PlatformCheckoutResponse, error) {
+	var result PlatformCheckoutResponse
+	if err := p.doRequest(ctx, http.MethodPost, "/api/platform/checkout-credits", req, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// GetUserCredits gets the remaining credits of an authorized linked user.
+func (p *PlatformClient) GetUserCredits(ctx context.Context, userID string) (*PlatformUserCreditsResponse, error) {
+	var result PlatformUserCreditsResponse
+	if err := p.doRequest(ctx, http.MethodGet, "/api/platform/users/"+userID+"/credits", nil, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // ConfirmAuthorization confirms a user's authorization with the provided code.
 func (p *PlatformClient) ConfirmAuthorization(ctx context.Context, code string) (*ConfirmAuthorizationResponse, error) {
 	var result ConfirmAuthorizationResponse
