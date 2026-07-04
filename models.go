@@ -159,6 +159,20 @@ type PlatformCheckoutResponse struct {
 	CheckoutURL string `json:"checkout_url"`
 }
 
+// PlatformChangePlanRequest changes the plan of a platform user's active subscription.
+type PlatformChangePlanRequest struct {
+	UserEmail    string       `json:"user_email"`
+	Tier         Tier         `json:"tier"`
+	BillingCycle BillingCycle `json:"billing_cycle"`
+}
+
+// PlatformChangePlanResponse is the result of a plan change.
+type PlatformChangePlanResponse struct {
+	SubscriptionID string       `json:"subscription_id"`
+	Tier           Tier         `json:"tier"`
+	BillingCycle   BillingCycle `json:"billing_cycle"`
+}
+
 // ConfirmAuthorizationRequest confirms user authorization.
 type ConfirmAuthorizationRequest struct {
 	Code string `json:"code"`

@@ -2,7 +2,7 @@
 
 Official Go SDK for the [Supervisor](https://supervisor.gg) content moderation API.
 
-Zero dependencies — uses only the standard library.
+Zero dependencies, uses only the standard library.
 
 ## Installation
 
@@ -90,6 +90,18 @@ result, err := platform.Moderate(ctx, &supervisor.PlatformModerationRequest{
 // List linked users
 users, err := platform.ListUsers(ctx)
 
+// Get a specific linked user by ID
+info, err := platform.GetUser(ctx, user.UserID)
+fmt.Printf("Authorized: %v, Tier: %s\n", info.Authorized, info.Tier)
+
+// Confirm a user's authorization with the code they received
+auth, err := platform.ConfirmAuthorization(ctx, "authorization-code")
+fmt.Printf("Authorized user: %s (%s)\n", auth.Email, auth.UserID)
+
+// Check Stripe Connect onboarding status
+status, err := platform.GetConnectStatus(ctx)
+fmt.Printf("Onboarding complete: %v\n", status.OnboardingComplete)
+
 // Create checkout
 checkout, err := platform.CreateCheckout(ctx, &supervisor.PlatformCheckoutRequest{
     UserEmail:    "user@example.com",
@@ -98,13 +110,27 @@ checkout, err := platform.CreateCheckout(ctx, &supervisor.PlatformCheckoutReques
     SuccessURL:   "https://yourapp.com/success",
     CancelURL:    "https://yourapp.com/cancel",
 })
+
+// Change the plan of an existing subscription
+change, err := platform.ChangePlan(ctx, supervisor.PlatformChangePlanRequest{
+    UserEmail:    "user@example.com",
+    Tier:         supervisor.TierPremium,
+    BillingCycle: supervisor.BillingAnnual,
+})
+fmt.Printf("Subscription %s is now %s (%s)\n", change.SubscriptionID, change.Tier, change.BillingCycle)
 ```
+
+### Checkout and plan changes
+
+- `CreateCheckout` returns 403 if the user has not authorized your platform, and 400 if the user already has an active subscription (use `ChangePlan` instead).
+- `ChangePlan` returns 403 if the subscription was not originated by your platform, and 400 if the user has no active subscription.
+- Revenue share is set at subscription creation and preserved across plan changes.
 
 ## Configuration
 
 ```go
 client := supervisor.NewClient("sk-...",
-    supervisor.WithBaseURL("https://api.supervisor.gg"),
+    supervisor.WithBaseURL("https://supervisor.gg"),
     supervisor.WithTimeout(30 * time.Second),
     supervisor.WithHTTPClient(customClient),
 )

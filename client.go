@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const defaultBaseURL = "https://api.supervisor.gg"
+const defaultBaseURL = "https://supervisor.gg"
 
 // Client is the Supervisor API client for content moderation.
 type Client struct {

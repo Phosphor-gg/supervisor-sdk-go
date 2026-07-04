@@ -192,6 +192,15 @@ func (p *PlatformClient) CreateCheckout(ctx context.Context, req *PlatformChecko
 	return &result, nil
 }
 
+// ChangePlan changes the plan of a platform user's active subscription.
+func (p *PlatformClient) ChangePlan(ctx context.Context, req PlatformChangePlanRequest) (*PlatformChangePlanResponse, error) {
+	var result PlatformChangePlanResponse
+	if err := p.doRequest(ctx, http.MethodPost, "/api/platform/change-plan", req, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // ConfirmAuthorization confirms a user's authorization with the provided code.
 func (p *PlatformClient) ConfirmAuthorization(ctx context.Context, code string) (*ConfirmAuthorizationResponse, error) {
 	var result ConfirmAuthorizationResponse
