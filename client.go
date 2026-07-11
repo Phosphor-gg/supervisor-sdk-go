@@ -106,7 +106,14 @@ func (c *Client) doRequest(ctx context.Context, method, path string, body any, r
 }
 
 // Moderate sends a moderation request for text or image content.
+// Images are preprocessed with PrepareImage before upload.
 func (c *Client) Moderate(ctx context.Context, req *ModerationRequest) (*ModerationResponse, error) {
+	if req != nil && req.Image != nil && *req.Image != "" {
+		r := *req
+		prepared := PrepareImage(*r.Image)
+		r.Image = &prepared
+		req = &r
+	}
 	var result ModerationResponse
 	if err := c.doRequest(ctx, http.MethodPost, "/api/moderate", req, &result); err != nil {
 		return nil, err
@@ -115,9 +122,22 @@ func (c *Client) Moderate(ctx context.Context, req *ModerationRequest) (*Moderat
 }
 
 // ModerateBatch sends a batch moderation request for multiple texts.
+// Images are preprocessed with PrepareImage before upload.
 func (c *Client) ModerateBatch(ctx context.Context, req *BatchModerationRequest) ([]ModerationResponse, error) {
 	if len(req.Texts) > 0 && len(req.Images) > 0 && len(req.Texts) != len(req.Images) {
 		return nil, fmt.Errorf("texts and images must have equal length when both are provided: got %d texts and %d images", len(req.Texts), len(req.Images))
+	}
+	if len(req.Images) > 0 {
+		r := *req
+		images := make([]string, len(r.Images))
+		for i, img := range r.Images {
+			if img == "" {
+				continue
+			}
+			images[i] = PrepareImage(img)
+		}
+		r.Images = images
+		req = &r
 	}
 	var result []ModerationResponse
 	if err := c.doRequest(ctx, http.MethodPost, "/api/batch", req, &result); err != nil {

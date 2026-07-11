@@ -175,7 +175,14 @@ func (p *PlatformClient) GetUser(ctx context.Context, userID string) (*PlatformU
 }
 
 // Moderate moderates content on behalf of a linked user.
+// Images are preprocessed with PrepareImage before upload.
 func (p *PlatformClient) Moderate(ctx context.Context, req *PlatformModerationRequest) (*ModerationResponse, error) {
+	if req != nil && req.Image != nil && *req.Image != "" {
+		r := *req
+		prepared := PrepareImage(*r.Image)
+		r.Image = &prepared
+		req = &r
+	}
 	var result ModerationResponse
 	if err := p.doRequest(ctx, http.MethodPost, "/api/platform/moderate", req, &result); err != nil {
 		return nil, err
